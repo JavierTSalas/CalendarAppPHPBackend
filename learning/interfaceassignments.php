@@ -1,0 +1,92 @@
+<?php
+include 'connect.php';
+
+if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
+	determineAction ();
+} else {
+
+	echo "This page is ment to be called with a post header </br>";
+}
+function determineAction() {
+	$data = json_decode ( file_get_contents ( 'php://input' ), true );
+	var_dump ( $data );
+	if (array_key_exists ( "ADD", $data )) {
+		addAssingments ();
+	}
+
+	if (array_key_exists ( "REMOVE", $data )) {
+		removeAssingments ();
+	}
+
+	if (array_key_exists ( "EDIT", $data )) {
+		editAssingments ();
+	}
+
+	if (array_key_exists ( "SET_DONE", $data )) {
+		setdoneAssingments ();
+	}
+
+	// $ass_name = $data ["Assignments"] [0] ["ass_name"];
+	/*
+	 * $db = new PDO('mysql:host=localhost;dbname=agenda', 'root', '');
+	 * $stmt = $db->prepare("INSERT INTO classes (class_id,class_name) VALUES (?,?)");
+	 *
+	 * $stmt->bindValue(1,'');
+	 * $stmt->bindParam(2,$ass_name);
+	 * $stmt->execute();
+	 *
+	 *
+	 */
+}
+function addAssingments() {
+	$data = json_decode ( file_get_contents ( 'php://input' ), true );
+	echo "I've got something to say...";
+	// for($i = 0; $i < sizeof ( $data ); $i ++) {
+	$ass_name = $data ["ADD"] ["ass_name"];
+	$class_id = $data ["ADD"] ["class_id"];
+	$date_assigned = $data ["ADD"] ["date_assigned"];
+	$due = $data ["ADD"] ["due"];
+	$done = $data ["ADD"] ["done"];
+	$weight = $data ["ADD"] ["weight"];
+
+	$db = new PDO ( 'mysql:host=localhost;dbname=agenda', 'root', '' );
+	$stmt = $db->prepare ( "INSERT INTO assignments (ass_id,ass_name,class_id,date_assigned,due,done,weight) VALUES (?,?,?,?,?,?,?)" );
+
+	$stmt->bindValue ( 1, '' );
+	$stmt->bindParam ( 2, $ass_name );
+	$stmt->bindParam ( 3, $class_id );
+	$stmt->bindParam ( 4, $date_assigned );
+	$stmt->bindParam ( 5, $due );
+	$stmt->bindParam ( 6, $done );
+	$stmt->bindParam ( 7, $weight );
+	$stmt->execute ();
+	// }
+	echo "That's all folks";
+}
+function removeAssingments() {
+	$data = json_decode ( file_get_contents ( 'php://input' ), true );
+	echo "I've got something to say...";
+	// for($i = 0; $i < sizeof ( $data ); $i ++) {
+	$ass_id = $data ["ADD"] ["ass_id"];
+	$db = new PDO ( 'mysql:host=localhost;dbname=agenda', 'root', '' );
+	$stmt = $db->prepare ( "DELETE FROM assignments WHERE ass_id = :ass_id" );
+	$stmt->bindParam ( ':ass_id', $ass_id );
+	$stmt->execute ();
+	// }
+	echo "That's all folks";
+}
+function editAssingments() {
+}
+function setdoneAssingments() {
+	$data = json_decode ( file_get_contents ( 'php://input' ), true );
+	echo "I've got something to say...";
+	// for($i = 0; $i < sizeof ( $data ); $i ++) {
+	$ass_id = $data ["ADD"] ["ass_id"];
+	$db = new PDO ( 'mysql:host=localhost;dbname=agenda', 'root', '' );
+	$stmt = $db->prepare ( "UPDATE assignments SET done=1 WHERE ass_id = :ass_id" );
+	$stmt->bindParam ( ':ass_id', $ass_id );
+	$stmt->execute ();
+	// }
+}
+
+?>
