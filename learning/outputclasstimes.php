@@ -10,7 +10,7 @@ function showAssignments()
 {
     $constants = new network_constants();
     $db = new PDO ('mysql:host='.$constants->host.';dbname='.$constants->dbname,$constants->username,$constants->password);
-    $stmt = $db->query("SELECT * FROM ".$constants->assignment_table." WHERE done=0 ORDER by class_id ASC,due ASC");
+    $stmt = $db->query("SELECT * FROM ".$constants->class_times_table);
     $temp_array = array();
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -19,7 +19,7 @@ function showAssignments()
 
     header('Content-Type: application/json');
     echo json_encode(array(
-        "Assignments" => $temp_array
+        "Class_times" => $temp_array
     ));
 }
 
